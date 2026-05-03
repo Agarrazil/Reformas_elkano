@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Piso señorial en San Bartolomé · Caso de estudio · Reformas Elkano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400;1,500&family=Inter+Tight:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  /* página detalle de proyecto */
+  .project-hero { padding: 130px 0 40px; }
+  .project-breadcrumb {
+    display: flex; gap: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 60px;
+  }
+  .project-breadcrumb a { color: var(--muted); text-decoration: none; }
+  .project-breadcrumb a:hover { color: var(--ink); }
+
+  .project-headline {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 80px;
+    align-items: end;
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 40px;
+  }
+  .project-headline h1 {
+    font-size: clamp(48px, 6.5vw, 96px);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    max-width: 14ch;
+  }
+  .project-headline em { color: var(--accent); font-style: italic; }
+  .project-headline p {
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .project-specs {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .spec {
+    padding: 24px 0;
+    border-right: 1px solid var(--line);
+  }
+  .spec:last-child { border-right: none; }
+  .spec:not(:first-child) { padding-left: 24px; }
+  .spec-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .spec-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    line-height: 1;
+  }
+  .spec-val small { font-size: 14px; color: var(--muted); display: block; font-family: 'Inter Tight'; margin-top: 4px; }
+
+  /* before/after slider */
+  .ba-section { padding: 80px 0 100px; }
+  .ba-wrapper {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    user-select: none;
+    cursor: ew-resize;
+    background: var(--paper-warm);
+  }
+  .ba-side {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .ba-side .ph { width: 100%; height: 100%; }
+  .ba-side.after { clip-path: inset(0 0 0 var(--ba-pos, 50%)); }
+  .ba-handle {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: var(--ba-pos, 50%);
+    width: 2px;
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--ink), 0 0 24px rgba(0,0,0,0.4);
+    transform: translateX(-1px);
+    z-index: 10;
+    pointer-events: none;
+  }
+  .ba-handle::before {
+    content: '⇄';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+  }
+  .ba-tag {
+    position: absolute;
+    top: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 6px 12px;
+    z-index: 11;
+    pointer-events: none;
+  }
+  .ba-tag.before { left: 24px; }
+  .ba-tag.after { right: 24px; }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+    padding: 60px 0;
+  }
+  .gallery-item .ph { width: 100%; height: 100%; }
+  .gi-large { grid-column: span 8; aspect-ratio: 4/3; }
+  .gi-tall  { grid-column: span 4; aspect-ratio: 3/4; }
+  .gi-wide  { grid-column: span 12; aspect-ratio: 21/9; }
+  .gi-half  { grid-column: span 6; aspect-ratio: 4/3; }
+
+  .narrative {
+    padding: 80px 0;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+  }
+  .narrative-body p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+  .narrative-body p strong { color: var(--ink); font-weight: 500; }
+
+  .materials-section {
+    padding: 80px 0;
+    background: var(--paper-warm);
+  }
+  .materials-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    margin-top: 40px;
+  }
+  .material {
+    border-top: 1px solid var(--ink);
+    padding-top: 16px;
+  }
+  .material .ph { aspect-ratio: 1; margin-bottom: 16px; }
+  .material-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  .material-spec {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .next-project {
+    padding: 100px 0;
+    border-top: 1px solid var(--line-strong);
+  }
+  .np-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  .np-grid .ph { aspect-ratio: 4/3; }
+
+  @media (max-width: 900px) {
+    .project-headline { grid-template-columns: 1fr; gap: 24px; }
+    .project-specs { grid-template-columns: 1fr 1fr; }
+    .spec { border-right: none; border-bottom: 1px solid var(--line); padding: 16px 0 !important; }
+    .narrative, .np-grid { grid-template-columns: 1fr; gap: 32px; }
+    .gallery { grid-template-columns: 1fr; }
+    .gi-large, .gi-tall, .gi-wide, .gi-half { grid-column: 1 / -1; aspect-ratio: 4/3; }
+    .materials-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body data-screen-label="Proyecto · Piso San Bartolomé">
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="images.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="shared.jsx"></script>
+
+<script type="text/babel">
+function BeforeAfter() {
+  const [pos, setPos] = React.useState(50);
+  const ref = React.useRef(null);
+  const handleMove = (e) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    setPos(Math.min(98, Math.max(2, x)));
+  };
+  return (
+    <div
+      ref={ref}
+      className="ba-wrapper"
+      style={{ ['--ba-pos']: pos + '%' }}
+      onMouseMove={handleMove}
+      onTouchMove={handleMove}
+    >
+      <div className="ba-side before">
+        <Placeholder src={window.IMG.before} label="Antes" />
+      </div>
+      <div className="ba-side after">
+        <Placeholder src={window.IMG.after} label="Después" />
+      </div>
+      <span className="ba-tag before">Antes · 03·2025</span>
+      <span className="ba-tag after">Después · 07·2025</span>
+      <div className="ba-handle"></div>
+    </div>
+  );
+}
+
+function ProjectPage() {
+  const t = window.i18n.es;
+  return (
+    <>
+      <Header lang="es" setLang={() => {}} t={t} />
+      <main>
+        <section className="project-hero">
+          <div className="container">
+            <div className="project-breadcrumb">
+              <a href="Reformas Elkano.html">Reformas Elkano</a>
+              <span>/</span>
+              <a href="Reformas Elkano.html#proyectos">Proyectos</a>
+              <span>/</span>
+              <span>San Bartolomé · 142 m²</span>
+            </div>
+            <div className="project-headline">
+              <h1>Piso señorial en <em>San Bartolomé</em>, abierto a la luz del Cantábrico.</h1>
+              <p>Reforma integral con redistribución completa de un piso de 1928 en pleno Centro. Eliminamos seis tabiques portantes mediante refuerzo metálico, integramos aerotermia con suelo radiante y devolvimos el carácter original de las molduras y la carpintería de roble.</p>
+            </div>
+            <div className="project-specs">
+              <div className="spec"><div className="spec-key">Superficie</div><div className="spec-val">142<small>m² útiles</small></div></div>
+              <div className="spec"><div className="spec-key">Duración</div><div className="spec-val">4<small>meses obra</small></div></div>
+              <div className="spec"><div className="spec-key">Inversión</div><div className="spec-val">238k<small>€ llave en mano</small></div></div>
+              <div className="spec"><div className="spec-key">Eficiencia</div><div className="spec-val">A<small>certificado energético</small></div></div>
+              <div className="spec"><div className="spec-key">Entrega</div><div className="spec-val">07·25<small>plazo cumplido</small></div></div>
+            </div>
+          </div>
+        </section>
+
+        <section className="ba-section">
+          <div className="container">
+            <div className="section-intro-label" style={{ marginBottom: 32 }}>
+              <span className="section-num">[ 01 ]</span>
+              <span className="eyebrow">Antes y después · Salón principal</span>
+            </div>
+            <BeforeAfter />
+            <p style={{ marginTop: 16, fontFamily: 'JetBrains Mono', fontSize: 11, color: 'var(--muted)', letterSpacing: '0.06em' }}>
+              ↳ Arrastre el divisor para comparar el estado original con la reforma terminada.
+            </p>
+          </div>
+        </section>
+
+        <section className="narrative">
+          <div className="container" style={{ display: 'contents' }}>
+            <div>
+              <span className="eyebrow">Memoria</span>
+              <h2 style={{ fontSize: 38, marginTop: 12, lineHeight: 1.1, maxWidth: '14ch' }}>El reto técnico.</h2>
+            </div>
+            <div className="narrative-body">
+              <p>El edificio, construido en 1928, conservaba la <strong>estructura original de muros de carga</strong> y forjados de madera. La propietaria —compradora reciente— quería abrir el espacio sin perder el alma del piso señorial: techos de tres metros con molduras, doble balcón a calle y carpintería interior de roble macizo.</p>
+              <p>Tras un estudio estructural firmado por nuestro aparejador, intervinimos con <strong>tres refuerzos metálicos IPN</strong> que permitieron eliminar los muros que separaban salón, comedor y cocina, generando un open space de 52 m². La cocina se integra como pieza de mobiliario más que como estancia, con frentes en roble teñido y encimera de Dekton.</p>
+              <p>La instalación de <strong>aerotermia Daikin Altherma 3</strong> con suelo radiante en toda la vivienda sustituyó a la antigua caldera de gasoil. La eficiencia pasó de E a A, con un ahorro estimado de 1.840 € anuales en consumo energético.</p>
+            </div>
+          </div>
+        </section>
+
+        <div className="container">
+          <div className="gallery">
+            <div className="gallery-item gi-large"><Placeholder src={window.IMG.kitch} label="Cocina" /></div>
+            <div className="gallery-item gi-tall"><Placeholder src={window.IMG.detail} label="Detalle" /></div>
+            <div className="gallery-item gi-half"><Placeholder src={window.IMG.bath} label="Baño" /></div>
+            <div className="gallery-item gi-half"><Placeholder src={window.IMG.proj2} label="Suite" /></div>
+            <div className="gallery-item gi-wide"><Placeholder src={window.IMG.living} label="Salón" /></div>
+          </div>
+        </div>
+
+        <section className="materials-section">
+          <div className="container">
+            <span className="eyebrow">[ 02 ] Memoria de calidades</span>
+            <h2 style={{ fontSize: 56, lineHeight: 1, marginTop: 12, maxWidth: '14ch' }}>Materiales y marcas.</h2>
+            <div className="materials-grid">
+              {[
+                { name: 'Roble macizo natural', spec: 'TARIMA · 14 mm · BARNIZ MATE' },
+                { name: 'Microcemento Topcret', spec: 'PAREDES · 2 mm · SELLADO MATE' },
+                { name: 'Dekton Kelya', spec: 'ENCIMERA · 12 mm · CANTO RECTO' },
+                { name: 'Daikin Altherma 3', spec: 'AEROTERMIA · 8 kW · COP 4.7' },
+                { name: 'Carpintería Klein', spec: 'PUERTAS · ROBLE · CIERRE IMÁN' },
+                { name: 'Grifería Tres Study', spec: 'ACABADO · NEGRO MATE' },
+                { name: 'Iluminación Erco', spec: 'LINEAL EMPOTRADA · 2700 K' },
+                { name: 'Ventana Schüco AWS75', spec: 'TRIPLE VIDRIO · Uw 0.9' },
+              ].map((m, i) => (
+                <div key={i} className="material">
+                  <Placeholder label={m.name.toUpperCase()} />
+                  <div className="material-name">{m.name}</div>
+                  <div className="material-spec">{m.spec}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="next-project">
+          <div className="container">
+            <div className="np-grid">
+              <div>
+                <span className="eyebrow">Siguiente caso</span>
+                <h2 style={{ fontSize: 56, lineHeight: 1, marginTop: 12, marginBottom: 24 }}>Ático con vistas a Sagüés.</h2>
+                <p style={{ fontSize: 16, color: 'var(--ink-soft)', marginBottom: 32, maxWidth: '40ch' }}>
+                  Aerotermia + suelo radiante refrescante en un ático de 98 m² en Gros. Tres meses de obra, vistas al Cantábrico desde la cocina.
+                </p>
+                <a href="Reformas Elkano.html#proyectos" className="btn">Ver siguiente proyecto <ArrowRight /></a>
+              </div>
+              <Placeholder src={window.IMG.proj2} label="Ático Gros" />
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer t={t} />
+      <WhatsAppFab />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<ProjectPage />);
+</script>
+</body>
+</html>
